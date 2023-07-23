@@ -1,9 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.ComponentModel.DataAnnotations;
 
 namespace recruitR_quiz_service;
-public static class Program
+public static partial class Program
 {
     public static void Main(string[] args)
     {
@@ -63,10 +62,8 @@ public static class Program
             var filter = Builders<QuizQuestion>.Filter.Eq(q => q.id, model.id);
             var update = Builders<QuizQuestion>.Update
                 .Set(q => q.question, model.question)
-                .Set(q => q.choiceNum, model.choiceNum)
+                .Set(q => q.choiceCount, model.choiceCount)
                 .SetOnInsert(q => q.id, model.id); // This ensures that the _id field is set if it's a new document.
-
-   
             var options = new UpdateOptions
             {
                 IsUpsert = true 
@@ -80,44 +77,15 @@ public static class Program
         app.Run();
     }
 
-    static bool IsValid(object obj)
-    {
-        var validationContext = new ValidationContext(obj, serviceProvider: null, items: null);
-        var validationResults = new List<ValidationResult>();
-        return Validator.TryValidateObject(obj, validationContext, validationResults, true);
-    }
-
-    static List<string> validationErrors(object obj)
-    {
-        var errors = new List<string>();
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(obj, new ValidationContext(obj), validationResults, true);
-        foreach (var validationResult in validationResults)
-        {
-            errors.Add(validationResult.ErrorMessage);
-        }
-        return errors;
-    }
-
 
     public static string getQuiz()
     {
         return "What is what";
     }
-
 }
+
 public class MongoConfiguration
 {
     public string connectionString { get; set; }
     public string databaseName { get; set; }
-}
-public class QuizQuestion
-{
-    public ObjectId id { get; set; }
-
-    [Required(ErrorMessage = "question is required.")]
-    public string question { get; set; }
-
-    [Range(2, int.MaxValue, ErrorMessage = "the number of choices must be greater than 1")]
-    public int choiceNum { get; set; }
 }
