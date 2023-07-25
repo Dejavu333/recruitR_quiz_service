@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+﻿using Microsoft.AspNetCore.Mvc;
 using recruitR_quiz_service.Model.Repository;
 
 namespace recruitR_quiz_service;
@@ -8,41 +6,47 @@ public partial class Program
 {
     public static void mapRoutes(WebApplication app)
     {
-        //app.MapGet("/", () => { return "hey"; });
-
         app.MapGet("/api/v1/GetAllQuizes", (IQuizRepository quizRepository) =>
         {
+            //get
             var quizes = quizRepository.GetAllQuizes();
+            //response
             return Results.Ok(quizes);
         });
 
-        app.MapPost("/api/v1/GetOneQuiz", ([FromBody] QuizDTO model, IQuizRepository quizRepository) =>
+        app.MapGet("/api/v1/GetOneQuiz", ([FromQuery] string name, IQuizRepository quizRepository) =>
         {
-            var quiz = quizRepository.GetOneQuiz(model);
+            //get
+            var quiz = quizRepository.GetOneQuiz(name);
+            //response
             return Results.Ok(quiz);
         });
 
-        app.MapPost("/api/v1/UpsertOneQuiz", ([FromBody] QuizDTO model, IQuizRepository quizRepository) =>
+        app.MapPost("/api/v1/UpsertOneQuiz", async ([FromBody] QuizDTO quizToUpsert, IQuizRepository quizRepository) =>
         {
-            var errors = validationErrors(model);
-            foreach (var question in model.quizQuestions)
+            //valiation
+            var errors = validationErrors(quizToUpsert);
+            foreach (var q in quizToUpsert.quizQuestions)
             {
-                var questionErrors = validationErrors(question);
-                errors.AddRange(questionErrors); 
+                var quizQuestionErrors = validationErrors(q);
+                errors.AddRange(quizQuestionErrors);
             }
             if (errors.Count > 0) return Results.BadRequest(new { Errors = errors });
-
-            var upsertedId = quizRepository.UpsertOneQuiz(model);
-            return Results.Ok((ReplaceOneResult.Acknowledged)upsertedId.Result);
+            //upsert
+            var replaceOneResult = await quizRepository.UpsertOneQuiz(quizToUpsert);
+            //response
+            return Results.Ok(replaceOneResult.UpsertedId);
         });
 
-        app.MapDelete("/api/v1/DeleteOneQuiz", ([FromBody] QuizDTO model, IQuizRepository quizRepository) =>
+        app.MapDelete("/api/v1/DeleteOneQuiz", async ([FromQuery] string name, IQuizRepository quizRepository) =>
         {
-            var errors = validationErrors(model);
-            if (errors.Count > 0) return Results.BadRequest(new { Errors = errors});
-
-            var deleteResult = quizRepository.DeleteOneQuiz(model);
-            return Results.Ok(deleteResult);
+            //valiation
+            var errors = validationErrors(name);
+            if (errors.Count > 0) return Results.BadRequest(new { Errors = errors });
+            //delete
+            var deleteResult = await quizRepository.DeleteOneQuiz(name);
+            //response
+            return Results.Ok(deleteResult.DeletedCount);
         });
     }
 }

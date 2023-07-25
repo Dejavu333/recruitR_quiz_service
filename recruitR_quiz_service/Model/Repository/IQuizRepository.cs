@@ -1,13 +1,12 @@
 ﻿using MongoDB.Driver;
-using ZstdSharp.Unsafe;
 
 namespace recruitR_quiz_service.Model.Repository
 {
     public interface IQuizRepository
     {
-        public QuizDTO GetOneQuiz(QuizDTO quiz);
         public List<QuizDTO> GetAllQuizes();
-        public Task<ReplaceOneResult> UpsertOneQuiz(QuizDTO quiz);
-        public DeleteResult DeleteOneQuiz(QuizDTO quiz);
+        public QuizDTO? GetOneQuiz(string targetName);
+        public Task<ReplaceOneResult> UpsertOneQuiz(QuizDTO quizToUpsert);
+        public Task<DeleteResult> DeleteOneQuiz(string targetName);
     }
 }

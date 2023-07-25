@@ -8,11 +8,10 @@ public class QuizDTO
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
-    public ObjectId? id { get; set; } = null;
-
+    [BsonId]
     [Required]
-    public string name { get; set; }
+    public string? name { get; set; }
 
     [HasMoreElementsThan(0)]
-    public List<QuizQuestionDTO> quizQuestions { get; set; }
+    public List<QuizQuestionDTO>? quizQuestions { get; set; }
 }
