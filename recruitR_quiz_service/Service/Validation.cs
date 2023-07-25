@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
 namespace recruitR_quiz_service;
@@ -10,20 +11,20 @@ class HasMoreElementsThanAttribute : ValidationAttribute
     }
     public override bool IsValid(object? value)
     {
-        if (value is IList<object> list && list.Count > this.moreThan) return true;
+        if (value is ICollection coll && coll.Count > this.moreThan) return true;
         else return false;
     }
 }
 
-class GreaterThanAttribute : ValidationAttribute
+class LaterThanNowByAttribute : ValidationAttribute
 {
     public DateTime date { get; set; }
 
-    public GreaterThanAttribute(double days, double hours)
+    public LaterThanNowByAttribute(double days, double hours)
     {
         this.date = DateTime.Now;
-        if (days != null) this.date = this.date.AddDays((double)days);
-        if (hours != null) this.date = this.date.AddHours((double)hours);
+        this.date = this.date.AddDays(days);
+        this.date = this.date.AddHours(hours);
     }
 
     public override bool IsValid(object? value)

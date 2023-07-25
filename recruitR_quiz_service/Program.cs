@@ -1,5 +1,6 @@
-using MongoDB.Bson;
 using MongoDB.Driver;
+using recruitR_quiz_service.Model.Repository;
+using recruitR_quiz_service.quiz.Repository;
 
 namespace recruitR_quiz_service;
 public static partial class Program
@@ -7,8 +8,17 @@ public static partial class Program
     public static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        addServices(builder);
 
+        WebApplication app = builder.Build();
+        useServices(app);
+        mapRoutes(app);
 
+        app.Run();
+    }
+
+    public static void addServices(WebApplicationBuilder builder)
+    {
         //builder.Services.AddAuthentication();
         //builder.Services.AddAuthorization();
         builder.Services.AddEndpointsApiExplorer();
@@ -22,10 +32,11 @@ public static partial class Program
             IMongoClient client = serviceProvider.GetRequiredService<IMongoClient>();
             return client.GetDatabase(mongoConfig.databaseName);
         });
+        builder.Services.AddSingleton<IQuizRepository, MongoQuizRepository>();
+    }
 
-        WebApplication app = builder.Build();
-
-
+    public static void useServices(WebApplication app)
+    {
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -34,53 +45,6 @@ public static partial class Program
         //app.UseHttpsRedirection(); // dotnet dev-certs https --trust
         //app.UseAuthentication();
         //app.UseAuthorization();
-
-
-        app.MapGet("/", () => { return "hey"; });
-
-        app.MapGet("/getQuiz", getQuiz);
-
-        app.MapGet("/api/quizQuestions/v1", async (IMongoDatabase db) =>
-        {
-            var collection = db.GetCollection<QuizQuestion>("your_collection_name");
-            var items = await collection.Find(FilterDefinition<QuizQuestion>.Empty).ToListAsync();
-            return Results.Ok(items);
-        });
-
-        app.MapPost("/api/quizQuestions/v1", async (IMongoDatabase db, QuizQuestion model, HttpContext context) =>
-        {
-            //if (IsValid(model)) Console.WriteLine("quizQ is valid");
-            var errors = validationErrors(model);
-            if (errors.Count > 0)
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsJsonAsync(new { Errors = errors });
-            }
-
-            var collection = db.GetCollection<QuizQuestion>("your_collection_name"); //TODO should be in repository
-            model.id = ObjectId.GenerateNewId(DateTime.UtcNow);
-            var filter = Builders<QuizQuestion>.Filter.Eq(q => q.id, model.id);
-            var update = Builders<QuizQuestion>.Update
-                .Set(q => q.question, model.question)
-                .Set(q => q.choiceCount, model.choiceCount)
-                .SetOnInsert(q => q.id, model.id); // This ensures that the _id field is set if it's a new document.
-            var options = new UpdateOptions
-            {
-                IsUpsert = true 
-            };
-
-            await collection.UpdateOneAsync(filter, update, options);
-            return Results.Ok(model);
-        });
-
-
-        app.Run();
-    }
-
-
-    public static string getQuiz()
-    {
-        return "What is what";
     }
 }
 
