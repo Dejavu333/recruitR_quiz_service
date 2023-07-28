@@ -1,52 +1,100 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using recruitR_quiz_service.Model.Repository;
 
 namespace recruitR_quiz_service;
-public partial class Program
+
+//public partial class Program
+//{
+//    public static void mapRoutes(WebApplication app)
+//    {
+//        app.MapGet("/api/v1/GetAllQuizes", (IQuizRepository quizRepository) =>
+//        {
+//            //get
+//            var quizes = quizRepository.GetAllQuizes();
+//            //response
+//            if (quizes.Count == 0) return Results.NotFound();
+//            else return Results.Ok(quizes);
+//        });
+
+//        app.MapGet("/api/v1/GetOneQuiz", ([FromQuery] string name, IQuizRepository quizRepository) =>
+//        {
+//            //get
+//            var quiz = quizRepository.GetOneQuiz(name);
+//            //response
+//            if (quiz == null) return Results.NotFound();
+//            else return Results.Ok(quiz);
+//        });
+
+//        app.MapPost("/api/v1/UpsertOneQuiz", async ([FromBody] QuizDTO quizToUpsert, IQuizRepository quizRepository) =>
+//        {
+//            //validation
+//            var errors = recruitR_quiz_service.Program.validationErrors(quizToUpsert);
+//            if (errors.Count > 0) return Results.BadRequest(new { Errors = errors });
+//            //upsert
+//            var replaceOneResult = await quizRepository.UpsertOneQuiz(quizToUpsert);
+//            //response
+//            bool isInserted = replaceOneResult.UpsertedId != null;
+//            bool isModified = replaceOneResult.ModifiedCount > 0;
+//            if (isInserted) return Results.Ok(Msg.INSERTED);
+//            else if (isModified) return Results.Ok(Msg.UPDATED);
+//            else return Results.NotFound();
+//        });
+
+//        app.MapDelete("/api/v1/DeleteOneQuiz", async ([FromQuery] string name, IQuizRepository quizRepository) =>
+//        {
+//            //validation
+//            var errors = recruitR_quiz_service.Program.validationErrors(name);
+//            if (errors.Count > 0) return Results.BadRequest(new { Errors = errors });
+//            //delete
+//            var deleteResult = await quizRepository.DeleteOneQuiz(name);
+//            //response
+//            if (deleteResult.DeletedCount == 0) return Results.NotFound(Msg.NOT_FOUND);
+//            return Results.Ok("deleted");
+//        });
+//    }
+//}
+
+[ApiController]
+public class QuizController : ControllerBase
 {
-    public static void mapRoutes(WebApplication app)
+    private readonly IQuizRepository _quizRepository;
+
+    public QuizController(IQuizRepository quizRepository)
     {
-        app.MapGet("/api/v1/GetAllQuizes", (IQuizRepository quizRepository) =>
-        {
-            //get
-            var quizes = quizRepository.GetAllQuizes();
-            //response
-            return Results.Ok(quizes);
-        });
+        _quizRepository = quizRepository;
+    }
 
-        app.MapGet("/api/v1/GetOneQuiz", ([FromQuery] string name, IQuizRepository quizRepository) =>
-        {
-            //get
-            var quiz = quizRepository.GetOneQuiz(name);
-            //response
-            return Results.Ok(quiz);
-        });
+    [HttpGet("/api/v1/GetAllQuizes")]
+    public ActionResult<List<QuizDTO>> GetAllQuizes()
+    {
+        var quizes = _quizRepository.GetAllQuizes();
+        if (quizes.Count == 0) return NotFound();
+        else return Ok(quizes);
+    }
 
-        app.MapPost("/api/v1/UpsertOneQuiz", async ([FromBody] QuizDTO quizToUpsert, IQuizRepository quizRepository) =>
-        {
-            //valiation
-            var errors = validationErrors(quizToUpsert);
-            foreach (var q in quizToUpsert.quizQuestions)
-            {
-                var quizQuestionErrors = validationErrors(q);
-                errors.AddRange(quizQuestionErrors);
-            }
-            if (errors.Count > 0) return Results.BadRequest(new { Errors = errors });
-            //upsert
-            var replaceOneResult = await quizRepository.UpsertOneQuiz(quizToUpsert);
-            //response
-            return Results.Ok(replaceOneResult.UpsertedId);
-        });
+    [HttpGet("/api/v1/GetOneQuiz")]
+    public ActionResult<QuizDTO> GetOneQuiz([FromQuery] string name)
+    {
+        var quiz = _quizRepository.GetOneQuiz(name);
+        if (quiz == null) return NotFound();
+        else return Ok(quiz);
+    }
 
-        app.MapDelete("/api/v1/DeleteOneQuiz", async ([FromQuery] string name, IQuizRepository quizRepository) =>
-        {
-            //valiation
-            var errors = validationErrors(name);
-            if (errors.Count > 0) return Results.BadRequest(new { Errors = errors });
-            //delete
-            var deleteResult = await quizRepository.DeleteOneQuiz(name);
-            //response
-            return Results.Ok(deleteResult.DeletedCount);
-        });
+    [HttpPost("/api/v1/UpsertOneQuiz")]
+    public async Task<ActionResult> UpsertOneQuiz([FromBody] QuizDTO quizToUpsert)
+    {
+        var replaceOneResult = await _quizRepository.UpsertOneQuiz(quizToUpsert);
+        bool isInserted = replaceOneResult.UpsertedId != null;
+        bool isModified = replaceOneResult.ModifiedCount > 0;
+        if (isInserted) return Ok(Msg.INSERTED);
+        else if (isModified) return Ok(Msg.UPDATED);
+        else return NotFound();
+    }
+
+    [HttpDelete("/api/v1/DeleteOneQuiz")]
+    public async Task<ActionResult> DeleteOneQuiz([FromQuery] string name)
+    {
+        var deleteResult = await _quizRepository.DeleteOneQuiz(name);
+        if (deleteResult.DeletedCount == 0) return NotFound(Msg.NOT_FOUND);
+        return Ok("deleted");
     }
 }

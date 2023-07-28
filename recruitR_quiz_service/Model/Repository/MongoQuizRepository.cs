@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Diagnostics;
-using MongoDB.Driver;
-using recruitR_quiz_service.Model.Repository;
+﻿using MongoDB.Driver;
 
-namespace recruitR_quiz_service.quiz.Repository;
+namespace recruitR_quiz_service;
 
 public sealed class MongoQuizRepository : IQuizRepository
 {    

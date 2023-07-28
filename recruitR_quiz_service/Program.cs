@@ -1,6 +1,4 @@
 using MongoDB.Driver;
-using recruitR_quiz_service.Model.Repository;
-using recruitR_quiz_service.quiz.Repository;
 
 namespace recruitR_quiz_service;
 public static partial class Program
@@ -12,16 +10,14 @@ public static partial class Program
 
         WebApplication app = builder.Build();
         useServices(app);
-        mapRoutes(app);
-
         app.Run();
     }
 
     public static void addServices(WebApplicationBuilder builder)
     {
-        //builder.Services.AddAuthentication();
-        //builder.Services.AddAuthorization();
-        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddControllers();
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
         builder.Services.AddSwaggerGen();
         /* Loads MongoDB configuration from appsettings.json */
         var mongoConfig = builder.Configuration.GetSection("MongoDB").Get<MongoConfiguration>();
@@ -31,7 +27,7 @@ public static partial class Program
         {
             IMongoClient client = serviceProvider.GetRequiredService<IMongoClient>();
             return client.GetDatabase(mongoConfig.databaseName);
-        });
+        }); //TODO could be in repo
         builder.Services.AddSingleton<IQuizRepository, MongoQuizRepository>();
     }
 
@@ -43,8 +39,9 @@ public static partial class Program
             app.UseSwaggerUI();
         }
         //app.UseHttpsRedirection(); // dotnet dev-certs https --trust
-        //app.UseAuthentication();
-        //app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapControllers();
     }
 }
 
@@ -53,3 +50,5 @@ public class MongoConfiguration
     public string connectionString { get; set; }
     public string databaseName { get; set; }
 }
+
+//TODO api versioning, crud results, global error handling

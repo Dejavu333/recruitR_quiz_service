@@ -9,6 +9,6 @@ public class QuizQuestionDTO
     [Required]
     public string? question { get; set; }
 
-    [HasMoreElementsThan(1, ErrorMessage = "choices must have at least 2 elements")]
+    [HasMoreElementsThan(1)]
     public List<string>? choices { get; set; }
 }

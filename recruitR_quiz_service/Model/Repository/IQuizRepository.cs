@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace recruitR_quiz_service.Model.Repository
+namespace recruitR_quiz_service
 {
     public interface IQuizRepository
     {
