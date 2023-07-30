@@ -6,6 +6,12 @@ public sealed class MongoConfiguration
 {
     public string connectionString { get; set; }
     public string databaseName { get; set; }
+    
+    public MongoConfiguration(IConfiguration appConfig)
+    {
+        this.connectionString = appConfig.GetSection("MongoDB")["ConnectionString"];
+        this.databaseName = appConfig.GetSection("MongoDB")["DatabaseName"];
+    }
 }
 
 public sealed class MongoQuizRepository : IQuizRepository
@@ -20,16 +26,16 @@ public sealed class MongoQuizRepository : IQuizRepository
     //---------------------------------------------
     // constructors
     //---------------------------------------------
-    public MongoQuizRepository(IMongoDatabase db)
+    public MongoQuizRepository(MongoConfiguration mongoConfig)
     {
-        this.db = db;
-        refreshCollection();
+        this.db = new MongoClient(mongoConfig.connectionString).GetDatabase(mongoConfig.databaseName);
+        refreshInMemoryCollection();
     }
 
     //---------------------------------------------
     // methods
     //---------------------------------------------
-    void refreshCollection()
+    void refreshInMemoryCollection()
     {
         this.coll = this.db.GetCollection<QuizDTO>(QUIZES_COLL_NAME);
     }
@@ -53,7 +59,7 @@ public sealed class MongoQuizRepository : IQuizRepository
             replacement: quizToUpsert,
             options: new ReplaceOptions { IsUpsert = true });
 
-        refreshCollection();
+        refreshInMemoryCollection();
         return result;
     }
 
@@ -61,7 +67,7 @@ public sealed class MongoQuizRepository : IQuizRepository
     {
         var result = await coll.DeleteOneAsync(q => q.name == targetName);
 
-        refreshCollection();
+        refreshInMemoryCollection();
         return result;
     }
 }

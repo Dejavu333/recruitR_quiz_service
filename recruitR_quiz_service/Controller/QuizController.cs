@@ -44,6 +44,6 @@ public class QuizController : ControllerBase
     {
         var deleteResult = await _quizRepository.DeleteOneQuiz(name);
         if (deleteResult.DeletedCount == 0) return NotFound(Msg.NOT_FOUND);
-        return Ok("deleted");
+        return Ok(Msg.DELETED);
     }
 }

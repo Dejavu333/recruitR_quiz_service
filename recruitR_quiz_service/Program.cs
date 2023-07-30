@@ -20,7 +20,10 @@ static class Program
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddSingleton<IQuizRepository, MongoQuizRepository>();
+        builder.Services.AddSingleton<IQuizRepository>((serviceProvider) =>
+        {
+            return new MongoQuizRepository(new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));
+        });
     }
 
     static void useServices(WebApplication app)
