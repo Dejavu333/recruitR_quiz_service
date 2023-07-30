@@ -4,3 +4,5 @@ recruitR_quiz_service/dockervolume
 .vs/ProjectEvaluation
 .vs
 recruitR_quiz_service/bin
+.idea
+*.user

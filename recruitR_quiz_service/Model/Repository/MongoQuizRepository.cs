@@ -2,8 +2,14 @@
 
 namespace recruitR_quiz_service;
 
+public sealed class MongoConfiguration
+{
+    public string connectionString { get; set; }
+    public string databaseName { get; set; }
+}
+
 public sealed class MongoQuizRepository : IQuizRepository
-{    
+{
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
@@ -23,7 +29,8 @@ public sealed class MongoQuizRepository : IQuizRepository
     //---------------------------------------------
     // methods
     //---------------------------------------------
-    void refreshCollection() {
+    void refreshCollection()
+    {
         this.coll = this.db.GetCollection<QuizDTO>(QUIZES_COLL_NAME);
     }
 
