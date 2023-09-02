@@ -3,7 +3,7 @@ version: '3.1'
 services:
   mongo:
     image: mongo:4.4.6
-    container_name: "MongoDBContainer"
+    container_name: "mongo-container"
     #network_mode: host
     ports:
     - "27017:27017" # Map container port 27017 to host port 27017
@@ -15,4 +15,4 @@ services:
     volumes:
       - './dockervolume/mongodb:/data/db'
 
-# docker-compose -f docker-mongoDB.yml up -d
+# docker-compose -f docker-mongo.yml up -d

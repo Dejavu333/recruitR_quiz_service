@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using System.Linq.Expressions;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace recruitR_quiz_service;
 
@@ -40,16 +42,16 @@ public sealed class MongoQuizRepository : IQuizRepository
         this.coll = this.db.GetCollection<QuizDTO>(QUIZES_COLL_NAME);
     }
 
-    public List<QuizDTO> GetAllQuizes()
+    public List<QuizDTO> ReadQuizzes()
     {
         //return coll.FindAsync(FilterDefinition<QuizDTO>.Empty).GetAwaiter().GetResult().ToList();
         return coll.AsQueryable().ToList();
     }
 
-    public QuizDTO? GetOneQuiz(string targetName)
+    public QuizDTO? ReadOneQuiz(Expression<Func<QuizDTO,bool>> filter)
     {
         //return coll.FindAsync(q => q.name == quiz.name).GetAwaiter().GetResult().FirstOrDefault();
-        return coll.AsQueryable().Where(q => q.name == targetName).FirstOrDefault();
+        return coll.AsQueryable().Where(filter).FirstOrDefault();
     }
 
     public async Task<ReplaceOneResult> UpsertOneQuiz(QuizDTO quizToUpsert)

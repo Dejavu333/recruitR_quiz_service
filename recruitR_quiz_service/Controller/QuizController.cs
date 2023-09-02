@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using OneOf;
 namespace recruitR_quiz_service;
 
 [ApiController]
@@ -15,15 +16,16 @@ public class QuizController : ControllerBase
     [HttpGet("/api/v1/GetAllQuizes")]
     public ActionResult<List<QuizDTO>> GetAllQuizes()
     {
-        var quizes = _quizRepository.GetAllQuizes();
-        if (quizes.Count == 0) return NotFound();
-        else return Ok(quizes);
+        var quizzes = _quizRepository.ReadQuizzes();
+        if (quizzes.Count == 0) return NotFound();
+        else return Ok(quizzes);
     }
 
     [HttpGet("/api/v1/GetOneQuiz")]
-    public ActionResult<QuizDTO> GetOneQuiz([FromQuery] string name)
+    [ProducesResponseType(typeof(QuizDTO),StatusCodes.Status200OK)] [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult GetOneQuiz([FromQuery] string name)
     {
-        var quiz = _quizRepository.GetOneQuiz(name);
+        var quiz = _quizRepository.ReadOneQuiz(quizInDb=>quizInDb.name==name);
         if (quiz == null) return NotFound();
         else return Ok(quiz);
     }
