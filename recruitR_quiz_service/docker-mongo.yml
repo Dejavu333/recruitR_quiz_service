@@ -11,7 +11,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_DBNAME: test_qiuz_service_db
+      MONGO_DBNAME: qiuz_service_db
     volumes:
       - './dockervolume/mongodb:/data/db'
 

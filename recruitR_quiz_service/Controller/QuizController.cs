@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using OneOf;
+
 namespace recruitR_quiz_service;
 
 [ApiController]
@@ -14,7 +15,7 @@ public class QuizController : ControllerBase
     }
 
     [HttpGet("/api/v1/GetAllQuizes")]
-    public ActionResult<List<QuizDTO>> GetAllQuizes()
+    public ActionResult<List<QuizDTO>> GetAllQuizzes()
     {
         var quizzes = _quizRepository.ReadQuizzes();
         if (quizzes.Count == 0) return NotFound();

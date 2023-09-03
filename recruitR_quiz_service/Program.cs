@@ -1,4 +1,5 @@
-using MongoDB.Driver;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace recruitR_quiz_service;
 
@@ -16,14 +17,33 @@ static class Program
 
     static void addServices(WebApplicationBuilder builder)
     {
+        builder.Services.AddOpenTelemetry() //tracing
+            .ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName))
+            .WithTracing((tracing) =>
+            {   
+                tracing.AddAspNetCoreInstrumentation();
+                tracing.AddHttpClientInstrumentation();
+                tracing.AddSource("Microsoft.AspNetCore.Hosting");
+                var tracingOtlpEndpoint = builder.Configuration["OTLP_ENDPOINT_URL"]; 
+                if (tracingOtlpEndpoint != null)
+                {
+                    tracing.AddZipkinExporter(zipkinOptions => { zipkinOptions.Endpoint = new Uri(tracingOtlpEndpoint); }); // docker run -d -p 9411:9411 --name zipkin openzipkin/zipkin
+                }
+                // else
+                // {
+                //     tracing.AddConsoleExporter();
+                // }
+            });
         builder.Services.AddControllers();
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(); // openapi specs
+        // DI
         builder.Services.AddSingleton<IQuizRepository>((serviceProvider) =>
         {
             return new MongoQuizRepository(new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));
         });
+        
     }
 
     static void useServices(WebApplication app)
