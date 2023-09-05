@@ -57,7 +57,7 @@ public sealed class MongoQuizRepository : IQuizRepository
     public async Task<ReplaceOneResult> UpsertQuiz(QuizDTO quizToUpsert)
     {
         var result = await coll.ReplaceOneAsync(
-            filter: q => q.name == quizToUpsert.name,
+            filter: q => q.title == quizToUpsert.title,
             replacement: quizToUpsert,
             options: new ReplaceOptions { IsUpsert = true });
 
@@ -67,7 +67,7 @@ public sealed class MongoQuizRepository : IQuizRepository
 
     public async Task<DeleteResult> DeleteOneQuiz(string targetName)
     {
-        var result = await coll.DeleteOneAsync(q => q.name == targetName);
+        var result = await coll.DeleteOneAsync(q => q.title == targetName);
 
         refreshInMemoryCollection();
         return result;

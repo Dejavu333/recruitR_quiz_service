@@ -39,7 +39,7 @@ public class RetreiveQuizzesForUserUI_REST_V1 : ControllerBase
         }
         else 
         {
-            var quiz = _quizRepository.ReadQuiz(quizInDb=>quizInDb.name==name);
+            var quiz = _quizRepository.ReadQuiz(quizInDb=>quizInDb.title==name);
             if (quiz is null) return NotFound();
             else return Ok(new List<QuizDTO>{quiz});
         }
