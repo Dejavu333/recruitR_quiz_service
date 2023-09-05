@@ -13,4 +13,7 @@ public class QuizQuestionDTO
 
     [HasMoreElementsThan(1)] 
     public List<string>? choices { get; set; }
+    
+    [Required]
+    public int? answerInd { get; set; }
 }

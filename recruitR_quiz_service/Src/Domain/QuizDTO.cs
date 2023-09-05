@@ -15,6 +15,8 @@ public class QuizDTO
     [Required] [StringLength(150, MinimumLength = 3)]
     public string? title { get; set; }
 
+    public int? overallTimeLimit { get; set; } //todo alg so can't be exploited on the client's side
+    
     [HasMoreElementsThan(0)] 
     public List<QuizQuestionDTO>? quizQuestions { get; set; }
 }
