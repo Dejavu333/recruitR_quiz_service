@@ -6,3 +6,5 @@ recruitR_quiz_service/dockervolume
 recruitR_quiz_service/bin
 .idea
 *.user
+recruitR_quiz_service/rabbitmq-data
+.vscode

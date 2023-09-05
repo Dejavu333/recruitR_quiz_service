@@ -1,0 +1,9 @@
+req:
+    token -> instanceid , email
+
+isvalidtoken ? yes
+getcandidate(instanceid,email)
+didattend -> to true
+getquiztoeval(quizid)
+eval(answers,quiz)
+store score (candidate)

@@ -1,7 +1,8 @@
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
-namespace recruitR_quiz_service;
+namespace recruitR_quiz_service.Service;
+
 class HasMoreElementsThanAttribute : ValidationAttribute
 {
     public int moreThan { get; set; }

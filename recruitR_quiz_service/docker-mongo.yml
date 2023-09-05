@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3'
 
 services:
   mongo:
@@ -6,11 +6,11 @@ services:
     container_name: "mongo-container"
     #network_mode: host
     ports:
-    - "27017:27017" # Map container port 27017 to host port 27017
+    - "27017:27017" # maps container port 27017 to host port 27017
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_PASSWORD: test
       MONGO_DBNAME: qiuz_service_db
     volumes:
       - './dockervolume/mongodb:/data/db'

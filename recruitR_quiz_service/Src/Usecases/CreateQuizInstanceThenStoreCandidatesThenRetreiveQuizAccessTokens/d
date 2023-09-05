@@ -1,0 +1,11 @@
+req: 
+    [email],quizId, expirationdate
+
+services:
+    create a quizinstance and store 
+    ins candidate for each email and store
+    
+res:
+    tokens back as :value to the email(key)
+
+   

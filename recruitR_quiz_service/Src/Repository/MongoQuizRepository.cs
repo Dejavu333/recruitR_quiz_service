@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace recruitR_quiz_service;
+namespace recruitR_quiz_service.Repository;
 
 public sealed class MongoConfiguration
 {
@@ -48,13 +48,13 @@ public sealed class MongoQuizRepository : IQuizRepository
         return coll.AsQueryable().ToList();
     }
 
-    public QuizDTO? ReadOneQuiz(Expression<Func<QuizDTO,bool>> filter)
+    public QuizDTO? ReadQuiz(Expression<Func<QuizDTO,bool>> filter)
     {
         //return coll.FindAsync(q => q.name == quiz.name).GetAwaiter().GetResult().FirstOrDefault();
         return coll.AsQueryable().Where(filter).FirstOrDefault();
     }
 
-    public async Task<ReplaceOneResult> UpsertOneQuiz(QuizDTO quizToUpsert)
+    public async Task<ReplaceOneResult> UpsertQuiz(QuizDTO quizToUpsert)
     {
         var result = await coll.ReplaceOneAsync(
             filter: q => q.name == quizToUpsert.name,
