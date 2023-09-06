@@ -4,6 +4,7 @@ using RabbitMQ.Client;
 using System.Text;
 using recruitR_quiz_service.Repository;
 using recruitR_quiz_service.Service;
+using recruitR_quiz_service.Usecases.OpenQuizAndRetrieveQuizAccessTokens;
 
 
 namespace recruitR_quiz_service;
@@ -49,8 +50,8 @@ static class Program
         {
             return new MongoQuizRepository(new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));
         });
-        builder.Services.AddSingleton<ILoggerService, RabbitMQLogger>(); 
-        
+        builder.Services.AddSingleton<ILoggerService, RabbitMQLogger>();
+        builder.Services.AddSingleton<IUpsertQuizInstanceService, UpsertQuizInstanceService>();
     }
 
     static void useServices(WebApplication app)
