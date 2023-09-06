@@ -27,9 +27,9 @@ public class CandidateDTO
     //---------------------------------------------
     // constructors
     //---------------------------------------------
-    public CandidateDTO(string? id, QuizInstanceDTO refToQuizInstance, string? email, bool didAttendQuiz = false, double score = 0)
+    public CandidateDTO(QuizInstanceDTO refToQuizInstance, string? email, bool didAttendQuiz = false, double score = 0)
     {
-        this.id = id;
+        // this.id = id;
         // this.quizInstanceId = quizInstanceId;
         this.refToQuizInstance = refToQuizInstance;
         this.email = email;
