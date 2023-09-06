@@ -1,11 +1,9 @@
-﻿using System.Reflection.Metadata;
+﻿namespace recruitR_quiz_service.Repository;
 
-namespace recruitR_quiz_service;
-
-public interface IUsecase <TReturn>
+public interface IReadQuizInstanceService
 {
     //---------------------------------------------
     // methods to implement
     //---------------------------------------------
-    public TReturn handle();
+    
 }

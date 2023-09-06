@@ -56,7 +56,7 @@ public class RabbitMQLogger : ILoggerService
             Console.WriteLine("[Error] Can't init RabbitMQLogger\n"+e);
         }
     }
-
+    
     //---------------------------------------------
     // methods
     //---------------------------------------------

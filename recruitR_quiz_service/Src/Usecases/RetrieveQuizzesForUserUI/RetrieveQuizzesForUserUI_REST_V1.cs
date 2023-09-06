@@ -4,7 +4,7 @@ using recruitR_quiz_service.Repository;
 
 namespace recruitR_quiz_service.Usecases.RetreiveQuizzesForUserUI;
 
-public class RetreiveQuizzesForUserUI_REST_V1 : ControllerBase
+public class RetrieveQuizzesForUserUI_REST_V1 : ControllerBase
 {
     //---------------------------------------------
     // fields, properties
@@ -15,7 +15,7 @@ public class RetreiveQuizzesForUserUI_REST_V1 : ControllerBase
     //---------------------------------------------
     // constructors
     //---------------------------------------------
-    public RetreiveQuizzesForUserUI_REST_V1(IQuizRepository quizRepository, ILoggerService logger)
+    public RetrieveQuizzesForUserUI_REST_V1(IQuizRepository quizRepository, ILoggerService logger)
     {
         _quizRepository = quizRepository;
         _logger = logger;
