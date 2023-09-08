@@ -22,9 +22,9 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
 
     public record Result
     {
-        public List<Tuple<string, string>> emailˇtokenPairs;
+        public Dictionary<string, string> emailˇtokenPairs { get; set;}
 
-        public Result(List<Tuple<string, string>> emailˇtokenPairs)
+        public Result(Dictionary<string, string> emailˇtokenPairs)
         {
             this.emailˇtokenPairs = emailˇtokenPairs;
         }
@@ -52,14 +52,14 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
     public ActionResult<Result> handle([FromBody] Request req)
     {
         var quizInstance = new QuizInstanceDTO(req.quizId, req.expirationDate);
-        var emailtokenpairs = new List<Tuple<string, string>>();
+        var emailtokenpairs = new Dictionary<string, string>();
         foreach (string email in req.emails)
         {
             var c = new CandidateDTO(quizInstance, email);
             quizInstance.addCandidate(c); 
-            var r = Tuple.Create(c.email, c.quizAccessToken);
+            // var r = Tuple.Create(c.email, c.quizAccessToken);
 
-            emailtokenpairs.Add(r);
+            emailtokenpairs.Add(c.email, c.quizAccessToken);
         }
 
         _upsertQuizInstanceService.upsert(quizInstance);
