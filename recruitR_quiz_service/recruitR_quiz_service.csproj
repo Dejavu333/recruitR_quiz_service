@@ -23,7 +23,6 @@
   <ItemGroup>
     <Folder Include="Docs\" />
     <Folder Include="Src\Usecases\EvaluateQuiz\" />
-    <Folder Include="Src\Usecases\RetrieveQuizToAttend\" />
     <Folder Include="Tests\" />
   </ItemGroup>
 

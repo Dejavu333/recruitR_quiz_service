@@ -5,6 +5,7 @@ using System.Text;
 using recruitR_quiz_service.Repository;
 using recruitR_quiz_service.Service;
 using recruitR_quiz_service.Usecases.OpenQuizAndRetrieveQuizAccessTokens;
+using recruitR_quiz_service.Usecases.RetrieveQuizToAttend;
 
 
 namespace recruitR_quiz_service;
@@ -44,7 +45,7 @@ static class Program
         builder.Services.AddControllers();
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
-        builder.Services.AddSwaggerGen();    // openapi specs
+        builder.Services.AddSwaggerGen(options => {options.CustomSchemaIds(type => $"{type.Name}_{System.Guid.NewGuid()}");});    // openapi specs
         // DI
         builder.Services.AddSingleton<IQuizRepository>((serviceProvider) =>
         {
@@ -52,6 +53,8 @@ static class Program
         });
         builder.Services.AddSingleton<ILoggerService, RabbitMQLogger>();
         builder.Services.AddSingleton<IUpsertQuizInstanceService, UpsertQuizInstanceService>();
+        builder.Services.AddSingleton<IRetrieveCandidateService, RetrieveCandidateService_Mongo>();
+        builder.Services.AddSingleton<IRetrieveQuizInstanceService, RetrieveQuizInstanceService_Mongo>();
     }
 
     static void useServices(WebApplication app)

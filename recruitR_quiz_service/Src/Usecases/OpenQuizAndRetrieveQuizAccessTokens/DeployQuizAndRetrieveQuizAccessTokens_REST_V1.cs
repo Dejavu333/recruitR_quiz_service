@@ -3,6 +3,7 @@ using recruitR_quiz_service.Service;
 
 namespace recruitR_quiz_service.Usecases.OpenQuizAndRetrieveQuizAccessTokens;
 
+[ApiController]
 public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
 {
     //---------------------------------------------
@@ -13,20 +14,20 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
     // private readonly IGenerateQuizAccessTokensService _generateQuizAccessTokensService;
     private readonly ILoggerService _logger;
 
-    public record Request
+    public new class Request
     {
         public string quizId { get; set; }
         public string[] emails { get; set; }
         public DateTime expirationDate { get; set; }
     }
-
-    public record Result
+    
+    public class Result
     {
-        public Dictionary<string, string> emailˇtokenPairs { get; set;}
+        public Dictionary<string, string> emailTokenPairs { get; set;}
 
-        public Result(Dictionary<string, string> emailˇtokenPairs)
+        public Result(Dictionary<string, string> emailTokenPairs)
         {
-            this.emailˇtokenPairs = emailˇtokenPairs;
+            this.emailTokenPairs = emailTokenPairs;
         }
     }
     
@@ -41,6 +42,7 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
         _upsertQuizInstanceService = upsertQuizInstanceService;
         // _generateQuizAccessTokensService = generateQuizAccessTokensService;
         _logger = logger;
+        //todo if logger is null -> fallbacklogger
     }
 
     //---------------------------------------------
@@ -52,37 +54,54 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
     public ActionResult<Result> handle([FromBody] Request req)
     {
         var quizInstance = new QuizInstanceDTO(req.quizId, req.expirationDate);
-        var emailtokenpairs = new Dictionary<string, string>();
+        var quizInstanceId = _upsertQuizInstanceService.upsert(quizInstance);
+        
+        var emailTokenPairs = new Dictionary<string, string>();
+        var candidatesToUpsert = new List<CandidateDTO>();
         foreach (string email in req.emails)
         {
-            var c = new CandidateDTO(quizInstance, email);
-            quizInstance.addCandidate(c); 
-            // var r = Tuple.Create(c.email, c.quizAccessToken);
-
-            emailtokenpairs.Add(c.email, c.quizAccessToken);
+            var c = new CandidateDTO(quizInstanceId, email);
+            if (c.email is null || emailTokenPairs.ContainsKey(c.email))
+            { 
+                continue;
+            }
+            else
+            {
+                emailTokenPairs.Add(c.email, c.quizAccessToken);
+                candidatesToUpsert.Add(c);
+            }
         }
-
-        _upsertQuizInstanceService.upsert(quizInstance);
-    
+        
+        if (candidatesToUpsert.Count > 0)
+        {
+            _logger.Info("upserting candidates in batch");
+            // var collection = _mongoDatabase.GetCollection<CandidateDTO>("Candidates");
+            // collection.InsertMany(candidatesToUpsert);
+        }
+        
         //transactional
-        return Ok(emailtokenpairs);
+        return Ok(emailTokenPairs);
     }
 }
-
-// public interface IGenerateQuizAccessTokensService
-// {
-//     public string generate();
-// }
 
 public interface IUpsertQuizInstanceService
 {
-    public void upsert(QuizInstanceDTO q);
+    public string upsert(QuizInstanceDTO q);
 }
 
-class UpsertQuizInstanceService : IUpsertQuizInstanceService
+public class UpsertQuizInstanceService : IUpsertQuizInstanceService
 {
-    public void upsert(QuizInstanceDTO q)
+    private readonly  ILoggerService _logger;
+
+    public UpsertQuizInstanceService(ILoggerService logger)
     {
-        Console.WriteLine("upserted quizinstance");
+        _logger = logger;
+    }
+
+    public string upsert(QuizInstanceDTO q)
+    {
+        _logger.Info("upserted quizinstance");
+        return "someid";
     }
 }
+

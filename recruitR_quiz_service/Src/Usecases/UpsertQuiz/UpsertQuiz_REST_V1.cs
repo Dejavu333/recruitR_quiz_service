@@ -4,6 +4,7 @@ using recruitR_quiz_service.Service;
 
 namespace recruitR_quiz_service.Usecases.UpsertQuiz;
 
+[ApiController]
 public class UpsertQuiz_REST_V1 : ControllerBase
 {
     //---------------------------------------------
