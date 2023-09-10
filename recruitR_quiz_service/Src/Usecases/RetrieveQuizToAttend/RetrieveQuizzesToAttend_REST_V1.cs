@@ -16,7 +16,7 @@ public class RetrieveQuizzesToAttend_REST_V1 : ControllerBase
     private readonly IQuizRepository _quizRepository;
     private readonly ILoggerService _logger;
     private readonly IRetrieveCandidateService _retrieveCandidateService;
-    private readonly IRetrieveQuizInstanceService _retrieveQuizInstanceService;
+    private readonly IRetrieveQuizInstanceService<QuizInstanceDTO> _retrieveQuizInstanceService;
 
     public class Request
     {
@@ -36,7 +36,7 @@ public class RetrieveQuizzesToAttend_REST_V1 : ControllerBase
         ILoggerService logger,
         IQuizRepository quizRepository,
         IRetrieveCandidateService retrieveCandidateService,
-        IRetrieveQuizInstanceService retrieveQuizInstanceService)
+        IRetrieveQuizInstanceService<QuizInstanceDTO> retrieveQuizInstanceService)
     {
         _quizRepository = quizRepository;
         _retrieveCandidateService = retrieveCandidateService;
@@ -48,7 +48,7 @@ public class RetrieveQuizzesToAttend_REST_V1 : ControllerBase
     // methods
     //---------------------------------------------
     [HttpGet("/[controller]")]
-    [ProducesResponseType(typeof(Result),StatusCodes.Status200OK)] 
+    [ProducesResponseType(typeof(Result),StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult handle([FromQuery]Request req)
     {
@@ -73,25 +73,40 @@ public class RetrieveQuizzesToAttend_REST_V1 : ControllerBase
         {
             return Ok($"quiz has expired at {quizinstance.expirationDate}");
         }
-        
+
         var quiz = _quizRepository.ReadQuiz(quizInDb=>quizInDb.id==quizinstance.quizId);
         if (quiz is null) return NotFound();
         else return Ok(new Result(){quiz = quiz});
     }
 }
 
-public interface IRetrieveQuizInstanceService
+public interface IRetrieveQuizInstanceService<TQuizInstance>
 {
-    public QuizInstanceDTO? retrieve(Expression<Func<QuizInstanceDTO,bool>> filter);
+    public TQuizInstance? retrieve(Expression<Func<TQuizInstance,bool>> filter);
 }
 
-public class RetrieveQuizInstanceService_Mongo : IRetrieveQuizInstanceService
+public class RetrieveQuizInstanceService_Mongo : IRetrieveQuizInstanceService<QuizInstanceDTO>
 {
-    // public IMongoDatabase dbContext;
+    //---------------------------------------------
+    // fields, properties
+    //---------------------------------------------
+    public IMongoDatabase dbContext;
 
+    //---------------------------------------------
+    // constructors
+    //---------------------------------------------
+    public RetrieveQuizInstanceService_Mongo(IMongoDatabase dbContext)
+    {
+        this.dbContext = dbContext;
+    }
+
+    //---------------------------------------------
+    // methods
+    //---------------------------------------------
     public QuizInstanceDTO? retrieve(Expression<Func<QuizInstanceDTO, bool>> filter)
     {
-        return new QuizInstanceDTO("asdid", DateTime.UtcNow);
+        var quizInstanceCollection = dbContext.GetCollection<QuizInstanceDTO>("QUIZINSTANCES");
+        return quizInstanceCollection.AsQueryable().Where(filter).FirstOrDefault();
     }
 }
 
@@ -103,11 +118,25 @@ public interface IRetrieveCandidateService
 
 public class RetrieveCandidateService_Mongo : IRetrieveCandidateService
 {
-    // public IMongoDatabase dbContext;
+    //---------------------------------------------
+    // fields, properties
+    //---------------------------------------------
+    public IMongoDatabase dbContext;
 
+    //---------------------------------------------
+    // constructors
+    //---------------------------------------------
+    public RetrieveCandidateService_Mongo(IMongoDatabase dbContext)
+    {
+        this.dbContext = dbContext;
+    }
+
+    //---------------------------------------------
+    // methods
+    //---------------------------------------------
     public CandidateDTO? retrieve(Expression<Func<CandidateDTO, bool>> filter)
     {
-        // return new CandidateDTO("string", "string@example.com", true, 10);
-        return new CandidateDTO("string", "string@example.com", false, 10);
+        var candidateCollection = dbContext.GetCollection<CandidateDTO>("CANDIDATES");
+        return candidateCollection.AsQueryable().Where(filter).FirstOrDefault();
     }
 }

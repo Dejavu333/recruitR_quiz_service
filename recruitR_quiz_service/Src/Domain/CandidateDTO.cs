@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace recruitR_quiz_service;
@@ -8,19 +9,16 @@ public class CandidateDTO
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
-    [BsonId] [Required] 
-    public string? id { get; set; }
-    
-    [BsonId] [Required]
-    public string? quizInstanceId { get; set; }
-    
-    [EmailAddress] [Required]
-    public string? email { get; set;}
+    [BsonId] [Required] public string? id { get; set; }
+
+    [Required] public string? quizInstanceId { get; set; }
+
+    [EmailAddress] [Required] public string? email { get; set; }
 
     public bool didAttendQuiz { get; set; }
 
-    public double score {get;set;}
-    
+    public double score { get; set; }
+
     public string quizAccessToken { get; set; }
 
     //---------------------------------------------
@@ -28,6 +26,7 @@ public class CandidateDTO
     //---------------------------------------------
     public CandidateDTO(string? quizInstanceId, string? email, bool didAttendQuiz = false, double score = 0)
     {
+        this.id ??= ObjectId.GenerateNewId().ToString();
         this.quizInstanceId = quizInstanceId;
         this.email = email;
         this.didAttendQuiz = didAttendQuiz;
@@ -42,9 +41,9 @@ public class CandidateDTO
     /// Generates a quiz access token for the candidate from the candidate's email and quiz instance id. Uses base64 encoding.
     /// </summary>
     /// <returns> The quiz access token as a string. </returns>
-    private string generateQuizAccessToken(string email, string quizInstanceId) 
+    private string generateQuizAccessToken(string email, string quizInstanceId)
     {
-        string emailAndQuizInstanceId = email +" "+ quizInstanceId;
+        string emailAndQuizInstanceId = email + " " + quizInstanceId;
         byte[] emailAndQuizInstanceIdBytes = System.Text.Encoding.UTF8.GetBytes(emailAndQuizInstanceId);
         string emailAndQuizInstanceIdBase64 = Convert.ToBase64String(emailAndQuizInstanceIdBytes);
         return emailAndQuizInstanceIdBase64;
@@ -54,7 +53,8 @@ public class CandidateDTO
     /// Gets the email and quiz instance id from the quiz access token. Uses base64 decoding.
     /// </summary>
     /// <returns> The email and quiz instance id as a (email, quizInstanceId) tuple. </returns>
-    public static (string email, string quizInstanceId) getEmailAndQuizInstanceIdFromQuizAccessToken(string quizAccessToken)
+    public static (string email, string quizInstanceId) getEmailAndQuizInstanceIdFromQuizAccessToken(
+        string quizAccessToken)
     {
         try
         {
@@ -66,7 +66,7 @@ public class CandidateDTO
         }
         catch (Exception e)
         {
-            return (email:"invalid", quizInstanceId:"invalid");
+            return (email: "invalid", quizInstanceId: "invalid");
         }
     }
 }

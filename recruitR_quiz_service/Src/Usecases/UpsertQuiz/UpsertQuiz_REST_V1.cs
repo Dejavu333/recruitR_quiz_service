@@ -28,6 +28,7 @@ public class UpsertQuiz_REST_V1 : ControllerBase
     [HttpPost("[controller]")]
     public async Task<ActionResult> handle([FromBody] QuizDTO quizToUpsert)
     {
+        _logger.Debug("upserting quiz");
         var replaceOneResult = await _quizRepository.UpsertQuiz(quizToUpsert);
         bool isInserted = replaceOneResult.UpsertedId != null;
         bool isModified = replaceOneResult.ModifiedCount > 0;

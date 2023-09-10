@@ -13,6 +13,17 @@ public class RetrieveQuizzesForUserUI_REST_V1 : ControllerBase
     private readonly IQuizRepository _quizRepository;
     private readonly ILoggerService _logger;
 
+    public record Result
+    {
+        public List<QuizDTO> quizzes { get; set; }
+    }
+
+    public record Request
+    {
+        public string? id { get; set; }
+        public string? title { get; set; }
+    }
+
     //---------------------------------------------
     // constructors
     //---------------------------------------------
@@ -26,23 +37,36 @@ public class RetrieveQuizzesForUserUI_REST_V1 : ControllerBase
     // methods
     //---------------------------------------------
     [HttpGet("/[controller]")]
-    [ProducesResponseType(typeof(List<QuizDTO>),StatusCodes.Status200OK)] 
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<List<QuizDTO>> handle([FromQuery]string? name)
+    public ActionResult<List<QuizDTO>> handle([FromQuery] Request req)
     {
-        _logger?.Debug("some debug msg");
-        
-        if (name is null)
+        _logger?.Debug("retrieving quizzes for user UI");
+
+        if (req.title is null && req.id is null)
         {
             var quizzes = _quizRepository.ReadQuizzes();
             if (quizzes.Count == 0) return NotFound();
             else return Ok(quizzes);
         }
-        else 
+
+        if (req.id is null)
         {
-            var quiz = _quizRepository.ReadQuiz(quizInDb=>quizInDb.title==name);
+            var quiz = _quizRepository.ReadQuiz(quizInDb => quizInDb.title == req.title);
             if (quiz is null) return NotFound();
-            else return Ok(new List<QuizDTO>{quiz});
+            else return Ok(new List<QuizDTO> { quiz });
+        }
+        else if (req.title is null)
+        {
+            var quiz = _quizRepository.ReadQuiz(quizInDb => quizInDb.id == req.id);
+            if (quiz is null) return NotFound();
+            else return Ok(new List<QuizDTO> { quiz });
+        }
+        else
+        {
+            var quiz = _quizRepository.ReadQuiz(quizInDb => quizInDb.title == req.title && quizInDb.id == req.id);
+            if (quiz is null) return NotFound();
+            else return Ok(new List<QuizDTO> { quiz });
         }
     }
 }

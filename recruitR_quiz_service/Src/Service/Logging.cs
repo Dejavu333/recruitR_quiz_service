@@ -31,7 +31,7 @@ public class RabbitMQLogger : ILoggerService
     private readonly string _queue;
     private readonly ConnectionFactory _factory;
     private ILogger? _fallbackLogger; //todo should be a separate class
-    private int _retryDelay;
+    private readonly int _retryDelay;
 
     //---------------------------------------------
     // constructors
@@ -49,13 +49,13 @@ public class RabbitMQLogger : ILoggerService
         _retryDelay = int.Parse(rabbitMQConfig["retryDelay"] ?? "1");
         _exchange = rabbitMQConfig["exchange"] ?? "";
         _queue = rabbitMQConfig["queue"] ?? "log_queue";
-        tryConnect();
+        tryConnectAsync();
     }
 
     //---------------------------------------------
     // methods
     //---------------------------------------------
-    private async Task tryConnect()
+    private async Task tryConnectAsync()
     {
         try
         {
@@ -68,9 +68,9 @@ public class RabbitMQLogger : ILoggerService
         {
             var loggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
             _fallbackLogger = loggerFactory.CreateLogger<RabbitMQLogger>();
-            _fallbackLogger.LogError($"Error initializing RabbitMQLogger: " + e.Message + $"\nRetrying in {_retryDelay} mins...");
+            _fallbackLogger.LogError($"Error initializing RabbitMQLogger: " + e.Message + $"\nRetrying in {_retryDelay} min(s)...");
             await Task.Delay(TimeSpan.FromMinutes(_retryDelay));
-            await tryConnect();
+            await tryConnectAsync();
         }
     }
 
@@ -134,7 +134,7 @@ public class RabbitMQLogger : ILoggerService
         Log(LogLevel.Error, message);
     }
     
-    //todo better summaries
+    //todo add better summaries
     /// <summary>
     /// Program is unable to continue execution.
     /// </summary>

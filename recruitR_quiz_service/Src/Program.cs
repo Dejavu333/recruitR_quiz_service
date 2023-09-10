@@ -2,6 +2,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using RabbitMQ.Client;
 using System.Text;
+using MongoDB.Driver;
 using recruitR_quiz_service.Repository;
 using recruitR_quiz_service.Service;
 using recruitR_quiz_service.Usecases.OpenQuizAndRetrieveQuizAccessTokens;
@@ -47,14 +48,23 @@ static class Program
         builder.Services.AddAuthorization();
         builder.Services.AddSwaggerGen(options => {options.CustomSchemaIds(type => $"{type.Name}_{System.Guid.NewGuid()}");});    // openapi specs
         // DI
-        builder.Services.AddSingleton<IQuizRepository>((serviceProvider) =>
-        {
-            return new MongoQuizRepository(new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));
-        });
-        builder.Services.AddSingleton<ILoggerService, RabbitMQLogger>();
-        builder.Services.AddSingleton<IUpsertQuizInstanceService, UpsertQuizInstanceService>();
-        builder.Services.AddSingleton<IRetrieveCandidateService, RetrieveCandidateService_Mongo>();
-        builder.Services.AddSingleton<IRetrieveQuizInstanceService, RetrieveQuizInstanceService_Mongo>();
+        builder.Services
+            .AddSingleton<IQuizRepository>((serviceProvider) =>
+            {
+                return new MongoQuizRepository(
+                    new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));
+            })
+            .AddSingleton<IMongoDatabase>((serviceProvider) =>
+            {
+                var mongoConfig = new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>());
+                var client = new MongoClient(mongoConfig.connectionString);
+                return client.GetDatabase(mongoConfig.databaseName);
+            })
+            .AddSingleton<ILoggerService, RabbitMQLogger>()
+            .AddSingleton<IUpsertQuizInstanceService, UpsertQuizInstanceService>()
+            .AddSingleton<IRetrieveCandidateService, RetrieveCandidateService_Mongo>()
+            .AddSingleton<IRetrieveQuizInstanceService<QuizInstanceDTO>, RetrieveQuizInstanceService_Mongo>()
+            .AddSingleton<IBatchUpsertCandidatesService, BatchUpsertCandidatesService>();
     }
 
     static void useServices(WebApplication app)

@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using recruitR_quiz_service.Service;
 
 namespace recruitR_quiz_service;
@@ -9,14 +11,12 @@ public class QuizInstanceDTO
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
-    [BsonId] [Required] 
+    [Required] 
     public string? quizId { get; set; }
 
     [BsonId] [Required] 
     public string? id { get; set; }
-
-    [HasMoreElementsThan(0)] public List<CandidateDTO> candidates { get; set; }
-
+    
     [LaterThanNowBy(days: 0, hours: 1)] 
     public DateTime? expirationDate {get;set;}
     
@@ -25,7 +25,7 @@ public class QuizInstanceDTO
     //---------------------------------------------
     public QuizInstanceDTO(string quizId, DateTime expirationDate)
     {
-        this.candidates = new();
+        this.id ??= ObjectId.GenerateNewId().ToString();
         this.quizId = quizId;
         this.expirationDate = expirationDate;
     }
@@ -33,8 +33,5 @@ public class QuizInstanceDTO
     //---------------------------------------------
     // methods
     //---------------------------------------------
-    public void addCandidate(CandidateDTO candidate)
-    {
-        this.candidates.Add(candidate);
-    }
+
 }

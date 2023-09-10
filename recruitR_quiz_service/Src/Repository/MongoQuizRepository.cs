@@ -57,7 +57,7 @@ public sealed class MongoQuizRepository : IQuizRepository
     public async Task<ReplaceOneResult> UpsertQuiz(QuizDTO quizToUpsert)
     {
         var result = await coll.ReplaceOneAsync(
-            filter: q => q.title == quizToUpsert.title,
+            filter: q => q.id == quizToUpsert.id,
             replacement: quizToUpsert,
             options: new ReplaceOptions { IsUpsert = true });
 

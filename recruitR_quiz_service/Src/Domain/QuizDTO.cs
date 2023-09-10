@@ -9,7 +9,7 @@ public class QuizDTO
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
-    [BsonId] [Required] 
+    [BsonId]
     public string? id { get; set; }
     
     [Required] [StringLength(150, MinimumLength = 3)]

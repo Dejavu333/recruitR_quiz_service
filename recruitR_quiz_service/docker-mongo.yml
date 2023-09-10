@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mongo:
-    image: mongo:4.4.6
+    image: mongo:7.0.1
     container_name: "mongo-container"
     #network_mode: host
     ports:
@@ -11,7 +11,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: test
-      MONGO_DBNAME: qiuz_service_db
+      MONGO_DBNAME: a
     volumes:
       - './dockervolume/mongodb:/data/db'
 
