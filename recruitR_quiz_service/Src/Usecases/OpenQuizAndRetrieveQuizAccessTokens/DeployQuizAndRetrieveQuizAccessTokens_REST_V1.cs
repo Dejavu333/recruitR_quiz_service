@@ -127,7 +127,7 @@ public class BatchUpsertCandidatesService : IBatchUpsertCandidatesService
 
         var bulkWriteModels = candidatesToUpsert.Select(candidate =>
             new ReplaceOneModel<CandidateDTO>(
-                Builders<CandidateDTO>.Filter.Eq("_id", candidate.id),
+                Builders<CandidateDTO>.Filter.Eq("quizAccessToken", candidate.quizAccessToken),
                 candidate)
             {
                 IsUpsert = true

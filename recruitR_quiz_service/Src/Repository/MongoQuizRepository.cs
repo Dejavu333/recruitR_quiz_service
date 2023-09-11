@@ -23,7 +23,7 @@ public sealed class MongoQuizRepository : IQuizRepository
     //---------------------------------------------
     readonly IMongoDatabase db;
     IMongoCollection<QuizDTO> coll;
-    const string QUIZES_COLL_NAME = "quizes";
+    const string QUIZES_COLL_NAME = "QUIZZES";
 
     //---------------------------------------------
     // constructors

@@ -14,7 +14,7 @@ public class QuizInstanceDTO
     [Required] 
     public string? quizId { get; set; }
 
-    [BsonId] [Required] 
+    [BsonId]
     public string? id { get; set; }
     
     [LaterThanNowBy(days: 0, hours: 1)] 

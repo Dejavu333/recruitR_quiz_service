@@ -9,24 +9,27 @@ public class CandidateDTO
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
-    [BsonId] [Required] public string? id { get; set; }
+    // [BsonId] [Required] public string? id { get; set; }
 
-    [Required] public string? quizInstanceId { get; set; }
+    [Required] 
+    public string? quizInstanceId { get; set; }
 
-    [EmailAddress] [Required] public string? email { get; set; }
+    [EmailAddress] [Required] 
+    public string? email { get; set; }
 
     public bool didAttendQuiz { get; set; }
 
     public double score { get; set; }
-
-    public string quizAccessToken { get; set; }
+    
+    [BsonId]
+    public string quizAccessToken { get; set; }    //becomes _id column in mongodb
 
     //---------------------------------------------
     // constructors
     //---------------------------------------------
     public CandidateDTO(string? quizInstanceId, string? email, bool didAttendQuiz = false, double score = 0)
     {
-        this.id ??= ObjectId.GenerateNewId().ToString();
+        // this.id ??= ObjectId.GenerateNewId().ToString();
         this.quizInstanceId = quizInstanceId;
         this.email = email;
         this.didAttendQuiz = didAttendQuiz;

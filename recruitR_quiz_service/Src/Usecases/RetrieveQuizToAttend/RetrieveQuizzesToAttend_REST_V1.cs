@@ -57,7 +57,7 @@ public class RetrieveQuizzesToAttend_REST_V1 : ControllerBase
         var emailAndQuizInstanceId = CandidateDTO.getEmailAndQuizInstanceIdFromQuizAccessToken(req.quizAccessToken);
         var email = emailAndQuizInstanceId.email;
         var quizInstanceId = emailAndQuizInstanceId.quizInstanceId;
-        var candidate = _retrieveCandidateService.retrieve(candidateInDb => candidateInDb.email == email && candidateInDb.quizInstanceId == quizInstanceId);
+        var candidate = _retrieveCandidateService.retrieve(candidateInDb => candidateInDb.email == email && candidateInDb.quizInstanceId == quizInstanceId)?[0];
         if (candidate is null || email == "invalid" || quizInstanceId == "invalid")
         {
             return Ok("invalid quiz access token");
@@ -113,7 +113,7 @@ public class RetrieveQuizInstanceService_Mongo : IRetrieveQuizInstanceService<Qu
 
 public interface IRetrieveCandidateService
 {
-    public CandidateDTO? retrieve(Expression<Func<CandidateDTO,bool>> filter);
+    public List<CandidateDTO> retrieve(Expression<Func<CandidateDTO,bool>> filter);
 }
 
 public class RetrieveCandidateService_Mongo : IRetrieveCandidateService
@@ -134,9 +134,9 @@ public class RetrieveCandidateService_Mongo : IRetrieveCandidateService
     //---------------------------------------------
     // methods
     //---------------------------------------------
-    public CandidateDTO? retrieve(Expression<Func<CandidateDTO, bool>> filter)
+    public List<CandidateDTO> retrieve(Expression<Func<CandidateDTO, bool>> filter)
     {
         var candidateCollection = dbContext.GetCollection<CandidateDTO>("CANDIDATES");
-        return candidateCollection.AsQueryable().Where(filter).FirstOrDefault();
+        return candidateCollection.AsQueryable().Where(filter).ToList();
     }
 }
