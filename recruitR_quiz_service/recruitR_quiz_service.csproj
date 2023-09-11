@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Docs\" />
-    <Folder Include="Src\Usecases\EvaluateQuiz\" />
     <Folder Include="Tests\" />
   </ItemGroup>
 
