@@ -1,6 +1,0 @@
-req:
-    token -> instanceid , email
-
-isvalidtoken ? yes
-didattend? no
-getquizdata(quizid)
