@@ -21,7 +21,7 @@ public class QuizDTO
     public string? ownerEmail { get; set; }
 
     [Range(60, double.MaxValue)]
-    public int? overallTimeLimit { get; set; } //todo alg so can't be exploited on the client's side
+    public int? overallTimeLimit { get; set; } //TODO alg so can't be exploited on the client's side
 
     [HasMoreElementsThan(0)] 
     public List<QuizQuestionDTO>? quizQuestions { get; set; }

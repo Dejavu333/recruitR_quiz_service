@@ -30,7 +30,7 @@ public class RabbitMQLogger : ILoggerService
     private readonly string _exchange;
     private readonly string _queue;
     private readonly ConnectionFactory _factory;
-    private ILogger? _fallbackLogger; //todo should be a separate class
+    private ILogger? _fallbackLogger;
     private readonly int _retryDelay;
 
     //---------------------------------------------

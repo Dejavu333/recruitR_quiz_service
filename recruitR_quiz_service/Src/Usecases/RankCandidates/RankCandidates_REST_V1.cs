@@ -45,7 +45,7 @@ public class RankCandidates_REST_V1 : ControllerBase
     {
         _logger?.Debug("retrieving ranking");
         
-        var candidateRanking = _retrieveCandidateService    //todo the whole candidate object is not needed, 2 fields (score,email) would be sufficient
+        var candidateRanking = _retrieveCandidateService    //TODO don't need the whole candidate object, 2 fields (score,email) would be sufficient
             .retrieve(candidateInDb => candidateInDb.quizInstanceId == req.quizInstanceId)
             .OrderByDescending(candidate => candidate.score).ToList();
         

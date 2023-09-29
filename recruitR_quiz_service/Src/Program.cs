@@ -49,7 +49,7 @@ static class Program
             .AddSingleton<IQuizRepository>((serviceProvider) =>
             {
                 return new MongoQuizRepository(
-                    new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));
+                    new MongoConfiguration(serviceProvider.GetRequiredService<IConfiguration>()));  //TODO implement retry policy (if mongodb isn't available)
             })
             .AddSingleton<IMongoDatabase>((serviceProvider) =>
             {
@@ -74,7 +74,7 @@ static class Program
         //app.UseHttpsRedirection(); // dotnet dev-certs https --trust
         app.UseAuthentication();
         app.UseAuthorization();
-        app.MapControllers();
+        app.MapControllers(); //TODO routes should have cancellation tokens to prevent timeout pain
     }
 }
 

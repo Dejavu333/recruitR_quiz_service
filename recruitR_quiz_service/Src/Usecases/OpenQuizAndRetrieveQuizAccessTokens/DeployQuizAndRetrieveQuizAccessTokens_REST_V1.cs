@@ -51,7 +51,7 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
     [ProducesResponseType(typeof(Result),StatusCodes.Status200OK)] 
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Result>> handle([FromBody] Request req)
-    {   //todo should check if quiz with req.quizid exists or should use nesting
+    {   //TODO should check if quiz with req.quizid exists or should use nesting
         var quizInstance = new QuizInstanceDTO(req.quizId, req.expirationDate);
         try
         {
@@ -90,7 +90,7 @@ public class DeployQuizAndRetrieveQuizAccessTokens_REST_V1 : ControllerBase
             }
         }
         
-        //todo should be transactional
+        //TODO should be transactional
         return Ok(emailTokenPairs);
     }
 }
