@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "recruitR_quiz_service", "recruitR_quiz_service\recruitR_quiz_service.csproj", "{E6833F00-B961-46A0-A1FD-DDBC9404AA10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "recruitR_quiz_service", "recruitR_quiz_service\recruitR_quiz_service.csproj", "{E6833F00-B961-46A0-A1FD-DDBC9404AA10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "recruitR_quiz_service_test", "recruitR_quiz_service_test\recruitR_quiz_service_test.csproj", "{DCF58979-6808-4006-B52D-7193FD4AB45F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E6833F00-B961-46A0-A1FD-DDBC9404AA10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6833F00-B961-46A0-A1FD-DDBC9404AA10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6833F00-B961-46A0-A1FD-DDBC9404AA10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF58979-6808-4006-B52D-7193FD4AB45F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF58979-6808-4006-B52D-7193FD4AB45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF58979-6808-4006-B52D-7193FD4AB45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF58979-6808-4006-B52D-7193FD4AB45F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

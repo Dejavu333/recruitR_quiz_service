@@ -8,3 +8,4 @@ recruitR_quiz_service/bin
 *.user
 recruitR_quiz_service/rabbitmq-data
 .vscode
+recruitR_quiz_service_test/obj
