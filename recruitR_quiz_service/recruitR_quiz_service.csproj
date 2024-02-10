@@ -28,12 +28,9 @@
   </ItemGroup>
 
 
+
   <ItemGroup>
-    <Folder Include="CCC\Core.Port\" />
-    <Folder Include="CCC\Infra.Adapter\" />
-    <Folder Include="UpsertQuiz\Core.Interactor\" />
-    <Folder Include="UpsertQuiz\Core.Port\" />
-    <Folder Include="UpsertQuiz\Infra.Adapter\" />
+    <Folder Include="Usecases\" />
   </ItemGroup>
 
 </Project>

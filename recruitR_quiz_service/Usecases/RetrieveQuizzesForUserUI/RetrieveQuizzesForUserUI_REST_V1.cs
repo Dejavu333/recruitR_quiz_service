@@ -6,21 +6,18 @@ using recruitR_quiz_service.Service;
 namespace recruitR_quiz_service.Usecases.RetrieveQuizzesForUserUI;
 
 [ApiController]
-public class RetrieveQuizzesForUserUI_REST_V1 : ControllerBase
-{
+public class RetrieveQuizzesForUserUI_REST_V1 : ControllerBase {
     //---------------------------------------------
     // fields, properties
     //---------------------------------------------
     private readonly IQuizRepository _quizRepository;
     private readonly ILoggerService _logger;
 
-    public record Result
-    {
+    public record Result {
         public List<QuizDTO> quizzes { get; set; }
     }
 
-    public record Request
-    {
+    public record Request {
         public string? owneremail { get; set; }
         public string? id { get; set; }
         public string? title { get; set; }
@@ -88,8 +85,7 @@ public class RetrieveQuizzesForUserUI_REST_V1 : ControllerBase
     }
 }
 
-public static class ExpressionExtensions
-{
+public static class ExpressionExtensions {
     public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
     {
         var invokedExpr = Expression.Invoke(right, left.Parameters);

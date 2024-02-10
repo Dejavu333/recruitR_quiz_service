@@ -20,7 +20,7 @@ static partial class Program {
     //---------------------------------------------
     // methods
     //---------------------------------------------
-    static void defaultSetup()
+    static void DefaultSetup()
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         addServices(builder);

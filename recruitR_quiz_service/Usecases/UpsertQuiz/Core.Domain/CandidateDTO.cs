@@ -41,7 +41,7 @@ public class CandidateDTO
     // methods
     //---------------------------------------------
     /// <summary>
-    /// Generates a quiz access token for the candidate from the candidate's email and quiz instance id. Uses base64 encoding.
+    /// Generates a quiz access token for the candidate using the candidate's email and quiz instance id.
     /// </summary>
     /// <returns> The quiz access token as a string. </returns>
     private string generateQuizAccessToken(string email, string quizInstanceId)
@@ -53,11 +53,10 @@ public class CandidateDTO
     }
 
     /// <summary>
-    /// Gets the email and quiz instance id from the quiz access token. Uses base64 decoding.
+    /// Gets the email and quiz instance id from the quiz access token.
     /// </summary>
     /// <returns> The email and quiz instance id as a (email, quizInstanceId) tuple. </returns>
-    public static (string email, string quizInstanceId) getEmailAndQuizInstanceIdFromQuizAccessToken(
-        string quizAccessToken)
+    public static (string email, string quizInstanceId) getEmailAndQuizInstanceIdFromQuizAccessToken(string quizAccessToken)
     {
         try
         {
