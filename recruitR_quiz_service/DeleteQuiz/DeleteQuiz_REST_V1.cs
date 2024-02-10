@@ -28,7 +28,7 @@ public class DeleteQuiz_REST_V1 : ControllerBase
     [HttpPost("/[controller]")]
     public async Task<ActionResult> handle([FromQuery] string name)
     {
-        var deleteResult = await _quizRepository.DeleteOneQuiz(name);
+        var deleteResult = await _quizRepository.DeleteQuiz(name);
         if (deleteResult.DeletedCount == 0) return NotFound(Msg.NOT_FOUND);
         return Ok(Msg.DELETED);
     }

@@ -27,4 +27,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="CCC\Core.Port\" />
+    <Folder Include="CCC\Infra.Adapter\" />
+    <Folder Include="UpsertQuiz\Core.Interactor\" />
+    <Folder Include="UpsertQuiz\Core.Port\" />
+    <Folder Include="UpsertQuiz\Infra.Adapter\" />
+  </ItemGroup>
+
 </Project>

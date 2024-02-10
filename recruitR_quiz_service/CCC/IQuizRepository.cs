@@ -8,5 +8,5 @@ public interface IQuizRepository
     public List<QuizDTO> ReadQuizzes();
     public QuizDTO? ReadQuiz(Expression<Func<QuizDTO,bool>> filter);
     public Task<ReplaceOneResult> UpsertQuiz(QuizDTO quizToUpsert);
-    public Task<DeleteResult> DeleteOneQuiz(string targetName);
+    public Task<DeleteResult> DeleteQuiz(string targetName);
 }

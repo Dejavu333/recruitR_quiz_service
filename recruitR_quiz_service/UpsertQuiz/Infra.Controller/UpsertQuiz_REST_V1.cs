@@ -30,10 +30,10 @@ public class UpsertQuiz_REST_V1 : ControllerBase
     {
         _logger.Debug("upserting quiz");
         var replaceOneResult = await _quizRepository.UpsertQuiz(quizToUpsert);
-        bool isInserted = replaceOneResult.UpsertedId != null;
+        bool isInserted = replaceOneResult.UpsertedId is not null;
         bool isModified = replaceOneResult.ModifiedCount > 0;
         if (isInserted) return Ok(Msg.INSERTED);
-        else if (isModified) return Ok(Msg.UPDATED);
-        else return NotFound();
+        if (isModified) return Ok(Msg.UPDATED);
+        return NotFound();
     }
 }
